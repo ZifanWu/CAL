@@ -14,7 +14,7 @@ cd ./env/safety-gym/
 pip install -e .
 ```
 
-We follow the environment implementation in the [CVPO](https://github.com/liuzuxin/cvpo-safe-rl/tree/main/envs/safety-gym) repo to accelerate the training process. All the compared baselines in the paper are also evaluated on this environment. For further description about the environment implementation, please refer to Appendix B.2 in the CVPO [paper](https://arxiv.org/abs/2201.11927).
+We follow the environment implementation in the [CVPO repo](https://github.com/liuzuxin/cvpo-safe-rl/tree/main/envs/safety-gym) to accelerate the training process. All the compared baselines in the paper are also evaluated on this environment. For further description about the environment implementation, please refer to Appendix B.2 in the [CVPO paper](https://arxiv.org/abs/2201.11927).
 
 ## Usage
 Configurations can be found in [`/arguments.py`](/arguments.py).
