@@ -22,16 +22,13 @@ def readParser():
     parser.add_argument('--user_name', default='')
     parser.add_argument('--n_training_threads', default=10)
     parser.add_argument('--experiment_name', default='exp')
-    parser.add_argument('--oracle_qc', action='store_true', default=False)
-    parser.add_argument('--oracle_epochs', type=int, default=1)
-    parser.add_argument('--oracle_freq', type=int, default=100)
     parser.add_argument('--num_epoch', type=int, default=300)
 
     # ---------------------Algorithm Config-------------------------
     parser.add_argument('--k', type=float, default=0.5)
     parser.add_argument('--qc_ens_size', type=int, default=4)
     parser.add_argument('--c', type=float, default=10)
-    parser.add_argument('--num_train_repeat', type=int, default=20, metavar='A')
+    parser.add_argument('--num_train_repeat', type=int, default=20)
 
     # -------------------Basic Hyperparameters---------------------
     parser.add_argument('--epsilon', default=1e-3)
@@ -47,13 +44,9 @@ def readParser():
     parser.add_argument('--lr', type=float, default=0.0003)
     parser.add_argument('--qc_lr', type=float, default=0.0005)
     parser.add_argument('--critic_target_update_frequency', type=int, default=2)
-    parser.add_argument('--replay_size', type=int, default=1000000, metavar='N',
-                        help='size of replay buffer (default: 10000000)')
-    parser.add_argument('--min_pool_size', type=int, default=1000, metavar='A',
-                        help='minimum pool size') # default 1000
-    parser.add_argument('--max_train_repeat_per_step', type=int, default=5, metavar='A',
-                        help='max training times per step')
-    parser.add_argument('--policy_train_batch_size', type=int, default=12, metavar='A',
-                        help='batch size for training policy')
+    parser.add_argument('--replay_size', type=int, default=1000000)
+    parser.add_argument('--min_pool_size', type=int, default=1000) # default 1000
+    parser.add_argument('--max_train_repeat_per_step', type=int, default=5)
+    parser.add_argument('--policy_train_batch_size', type=int, default=12)
 
     return parser.parse_args()
