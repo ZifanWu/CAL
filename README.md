@@ -1,7 +1,7 @@
 # CAL
 Code accompanying the paper ["Off-Policy Primal-Dual Safe Reinforcement Learning"](https://openreview.net/forum?id=vy42bYs1Wo).
 
-<img src="/img/cal_fig1.png" alt="CAL" style="zoom:20%;" />
+<img src="/img/cal_fig1.png" alt="CAL" width="300" />
 
 ## Installing Dependences
 ### MuJoCo
