@@ -22,12 +22,12 @@ Configurations can be found in [`/arguments.py`](/arguments.py).
 ### Training
 For MuJoCo tasks:
 ```shell
-python main_cal.py --env_name Hopper-v3 --num_epoch 300 --k 0.5 --c 10 --num_train_repeat 20
+python main.py --env_name Hopper-v3 --num_epoch 300 --k 0.5 --c 10 --num_train_repeat 20
 ```
 
 For Safety-Gym tasks:
 ```shell
-python main_cal.py --env_name Safexp-PointButton1-v0 --constraint_type safetygym --num_epoch 300 --k 0.5 --c 10 --num_train_repeat 20
+python main.py --env_name Safexp-PointButton1-v0 --constraint_type safetygym --num_epoch 300 --k 0.5 --c 10 --num_train_repeat 20
 ```
 
 
