@@ -28,7 +28,6 @@ def readParser():
     parser.add_argument('--num_epoch', type=int, default=300)
 
     # ---------------------Algorithm Config-------------------------
-    parser.add_argument('--UCB_qc', action='store_true', default=True)
     parser.add_argument('--k', type=float, default=0.5)
     parser.add_argument('--qc_ens_size', type=int, default=4)
     parser.add_argument('--c', type=float, default=10)
