@@ -16,7 +16,8 @@ def readParser():
     # -------------------Experiment Config---------------------
     parser.add_argument('--cuda', default=True, action="store_true",
                         help='run on CUDA (default: True)')
-    parser.add_argument('--cuda_num', default='0')
+    parser.add_argument('--cuda_num', default='0', 
+                        help='select the cuda number you want your program to run on')
     parser.add_argument('--use_wandb', action='store_true', default=False)
     parser.add_argument('--user_name', default='')
     parser.add_argument('--n_training_threads', default=10)
