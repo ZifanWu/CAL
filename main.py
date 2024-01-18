@@ -136,7 +136,6 @@ def main(args):
 if __name__ == '__main__':
     from arguments import readParser
     from env.constraints import get_threshold
-    import bullet_safety_gym
     import safety_gym
     args = readParser()
     args.cost_lim = get_threshold(args.env_name, constraint=args.constraint_type)
