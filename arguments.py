@@ -23,6 +23,7 @@ def readParser():
     parser.add_argument('--n_training_threads', default=10)
     parser.add_argument('--experiment_name', default='exp')
     parser.add_argument('--num_epoch', type=int, default=300)
+    parser.add_argument('--num_eval_epochs', type=int, default=10)
 
     # ---------------------Algorithm Config-------------------------
     parser.add_argument('--k', type=float, default=0.5)

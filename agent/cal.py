@@ -14,7 +14,6 @@ class CALAgent(Agent):
         self.discount = args.gamma
         self.safety_discount = args.safety_gamma
         self.critic_tau = args.tau
-        self.actor_update_frequency = 1
         self.critic_target_update_frequency = args.critic_target_update_frequency
         self.args = args
 
@@ -29,7 +28,7 @@ class CALAgent(Agent):
         self.critic_target = QNetwork(num_inputs, action_space.shape[0], args.hidden_size).to(self.device)
         self.critic_target.load_state_dict(self.critic.state_dict())
 
-        # Safety critic
+        # Safety critics
         self.safety_critics, self.safety_critic_targets = [], []
         for i in range(args.qc_ens_size): # TODO use bmm
             self.safety_critics.append(QcNetwork(num_inputs, action_space.shape[0], args.hidden_size).to(self.device))
@@ -121,10 +120,10 @@ class CALAgent(Agent):
             with torch.no_grad():
                 next_QCs.append(self.safety_critic_targets[i](next_obs, next_action))
         
-        # Critic Loss
+        # Critic loss
         critic_loss = F.mse_loss(current_Q1, target_Q) + F.mse_loss(current_Q2, target_Q)
 
-        # Safety Critic Loss
+        # Safety critics update
         if self.args.safetygym:
             not_done = torch.ones_like(not_done).to(self.device)
         for i in range(self.args.qc_ens_size):
@@ -134,21 +133,20 @@ class CALAgent(Agent):
             safety_critic_loss.backward()
             self.safety_critic_optimizers[i].step()
 
-        # Jointly optimize Reward and Safety Critics
+        # Reward critic update
         self.critic_optimizer.zero_grad()
         critic_loss.backward()
         self.critic_optimizer.step()
 
 
     def update_actor_and_alpha_and_beta(self, obs, action_taken):
-        # Get updated action from current pi_theta(*|obs)
         action, log_prob, _ = self.policy.sample(obs)
 
-        # Reward Critic
+        # Reward critic
         actor_Q1, actor_Q2 = self.critic(obs, action)
         actor_Q = torch.min(actor_Q1, actor_Q2)
 
-        # Safety Critic with policy actions
+        # Safety critic
         actor_QCs, current_QCs = [], []
         for i in range(self.args.qc_ens_size):
             actor_QCs.append(self.safety_critics[i](obs, action))
@@ -167,11 +165,11 @@ class CALAgent(Agent):
         if self.args.qc_ens_size == 1:
             actor_std = torch.zeros_like(actor_std).to(self.device)
         actor_QC = actor_mean + self.args.k * actor_std
-        # compute gradient rectification
+        # Compute gradient rectification
         self.rect = self.c * torch.mean(self.target_cost - current_QC)
         self.rect = torch.clamp(self.rect.detach(), max=self.lam.item())
 
-        # policy Loss
+        # Policy loss
         lam = self.lam.detach()
         actor_loss = torch.mean(
             self.alpha.detach() * log_prob
@@ -207,9 +205,7 @@ class CALAgent(Agent):
         mask_batch = torch.FloatTensor(mask_batch).to(self.device).unsqueeze(1)
 
         self.update_critic(state_batch, action_batch, reward_batch, cost_batch, next_state_batch, mask_batch)
-
-        if updates % self.actor_update_frequency == 0:
-            self.update_actor_and_alpha_and_beta(state_batch, action_batch)
+        self.update_actor_and_alpha_and_beta(state_batch, action_batch)
 
         if updates % self.critic_target_update_frequency == 0:
             soft_update(self.critic_target, self.critic, self.critic_tau)
