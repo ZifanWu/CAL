@@ -53,7 +53,7 @@ def train(args, env_sampler, agent, pool):
 
             if total_step % epo_len == 0 or total_step == 1:
                 test_reward, test_cost = evaluate(args.num_eval_epochs)
-                print('env: {}, step: {}, test_return: {}, test_cost: {}, budget: {}, seed: {}, cuda_num: {}, time: {}s'.format(args.env_name, total_step, np.around(test_reward, 2), np.around(test_cost, 2), agent.target_cost, args.seed, args.cuda_num, int(time.time() - sta)))
+                print('env: {}, exp: {}, step: {}, test_return: {}, test_cost: {}, budget: {}, seed: {}, cuda_num: {}, time: {}s'.format(args.env_name, args.experiment_name, total_step, np.around(test_reward, 2), np.around(test_cost, 2), args.cost_lim, args.seed, args.cuda_num, int(time.time() - sta)))
                 if args.use_wandb:
                     wandb.log({"test_return": test_reward, 'total_step': total_step})
                     wandb.log({"test_cost": test_cost, 'total_step': total_step})

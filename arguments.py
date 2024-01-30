@@ -23,13 +23,16 @@ def readParser():
     parser.add_argument('--n_training_threads', default=10)
     parser.add_argument('--experiment_name', default='exp')
     parser.add_argument('--num_epoch', type=int, default=300)
-    parser.add_argument('--num_eval_epochs', type=int, default=10)
+    parser.add_argument('--num_eval_epochs', type=int, default=1)
 
     # ---------------------Algorithm Config-------------------------
     parser.add_argument('--k', type=float, default=0.5)
     parser.add_argument('--qc_ens_size', type=int, default=4)
     parser.add_argument('--c', type=float, default=10)
     parser.add_argument('--num_train_repeat', type=int, default=20)
+
+    parser.add_argument('--intrgt_max', action='store_true', default=False)
+    parser.add_argument('--M', type=int, default=2, help='this number should be <= qc_ens_size')
 
     # -------------------Basic Hyperparameters---------------------
     parser.add_argument('--epsilon', default=1e-3)
@@ -43,7 +46,7 @@ def readParser():
                         help='Policy Type: Gaussian | Deterministic (default: Gaussian)')
     parser.add_argument('--hidden_size', type=int, default=256)
     parser.add_argument('--lr', type=float, default=0.0003)
-    parser.add_argument('--qc_lr', type=float, default=0.0005)
+    parser.add_argument('--qc_lr', type=float, default=0.001)
     parser.add_argument('--critic_target_update_frequency', type=int, default=2)
     parser.add_argument('--replay_size', type=int, default=1000000)
     parser.add_argument('--min_pool_size', type=int, default=1000) # default 1000
