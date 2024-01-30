@@ -1,3 +1,5 @@
+⚠️Caution! This branch is for an experimenting improvement for the Qc ensemble implementation which intends to accelerate the ensemble value computation. Modifications mainly take place in [./agent/model.py](./agent/model.py) and [./agent/cal.py](./agent/cal.py). After having validated the performance of this improvement, this branch will be merged to the main branch.
+
 # CAL
 Code accompanying the paper ["Off-Policy Primal-Dual Safe Reinforcement Learning"](https://openreview.net/forum?id=vy42bYs1Wo).
 
