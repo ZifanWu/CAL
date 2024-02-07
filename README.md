@@ -50,9 +50,14 @@ We adopt the same hyperparameter setting across all Safety-Gym tasks tested in o
 The configurations different from the default setting are as follows:
 
 - The conservatism parameter $k$ (`--k` in [`/arguments.py`](/arguments.py)) is 0. for Humanoid and 1. for HalfCheetah.
+
 - The convexity parameter $c$ (`--c`) is 100 for Ant, 1000 for HalfCheetah and Humanoid.
+
 - The replay ratio (`--num_train_repeat`) is 20 for HalfCheetah.
-- The ensemble size $E$ of the safety critic (`--qc_ens_size`) is 6 for Ant where the task is harder and thus needs a larger ensemble. In my test runs, the size of the ensemble does not significantly affect the running speed, thanks to the batch matrix multiplication function provided by PyTorch.
+
+- The ensemble size $E$ of the safety critic (`--qc_ens_size`) is 8 for Ant where the task is harder and thus needs a larger ensemble.
+
+  (In my test runs, the size of the ensemble does not significantly affect the running speed, thanks to the batch matrix multiplication function provided by PyTorch.)
 
 > While in CAL conservatism is originally incorporated in policy optimization, for the task of Humanoid we found it more effective to instead incorporate conservatism into $Q_c$ learning. To turn on this component, just set the option `--intrgt_max` to True.
 
