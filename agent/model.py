@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.distributions import Normal
-import numpy as np
 
 LOG_SIG_MAX = 2
 LOG_SIG_MIN = -20
@@ -13,22 +12,6 @@ def weights_init_(m):
     if isinstance(m, nn.Linear):
         torch.nn.init.xavier_uniform_(m.weight, gain=1)
         torch.nn.init.constant_(m.bias, 0)
-
-# Initialize Policy weights for ensemble networks
-def init_weights(m):
-    def truncated_normal_init(t, mean=0.0, std=0.01):
-        torch.nn.init.normal_(t, mean=mean, std=std)
-        while True:
-            cond = torch.logical_or(t < mean - 2 * std, t > mean + 2 * std)
-            if not torch.sum(cond):
-                break
-            t = torch.where(cond, torch.nn.init.normal_(torch.ones(t.shape), mean=mean, std=std), t)
-        return t
-
-    if type(m) == nn.Linear or isinstance(m, EnsembleFC):
-        input_dim = m.in_features
-        truncated_normal_init(m.weight, std=1 / (2 * np.sqrt(input_dim)))
-        m.bias.data.fill_(0.0)
 
 
 class QNetwork(nn.Module):
@@ -59,63 +42,22 @@ class QNetwork(nn.Module):
         x2 = self.linear6(x2)
         return x1, x2
 
-class EnsembleFC(nn.Module):
-    __constants__ = ['in_features', 'out_features']
-    in_features: int
-    out_features: int
-    ensemble_size: int
-    weight: torch.Tensor
+class QcNetwork(nn.Module):
+    def __init__(self, num_inputs, num_actions, hidden_dim):
+        super(QcNetwork, self).__init__()
+        self.linear1 = nn.Linear(num_inputs + num_actions, hidden_dim)
+        self.linear2 = nn.Linear(hidden_dim, hidden_dim)
+        self.linear3 = nn.Linear(hidden_dim, 1)
 
-    def __init__(self, in_features: int, out_features: int, ensemble_size: int, weight_decay: float = 0., bias: bool = True) -> None:
-        super(EnsembleFC, self).__init__()
-        self.in_features = in_features
-        self.out_features = out_features
-        self.ensemble_size = ensemble_size
-        self.weight = nn.Parameter(torch.Tensor(ensemble_size, in_features, out_features))
-        self.weight_decay = weight_decay
-        if bias:
-            self.bias = nn.Parameter(torch.Tensor(ensemble_size, out_features))
-        else:
-            self.register_parameter('bias', None)
-        self.reset_parameters()
-
-    def reset_parameters(self) -> None:
-        pass
-
-    def forward(self, input: torch.Tensor) -> torch.Tensor:
-        w_times_x = torch.bmm(input, self.weight)
-        return torch.add(w_times_x, self.bias[:, None, :])  # w times x + b
-
-    def extra_repr(self) -> str:
-        return 'in_features={}, out_features={}, bias={}'.format(
-            self.in_features, self.out_features, self.bias is not None
-        )
-
-class QcEnsemble(nn.Module):
-    def __init__(self, state_size, action_size, ensemble_size, hidden_size=256):
-        super(QcEnsemble, self).__init__()
-        self.nn1 = EnsembleFC(state_size + action_size, hidden_size, ensemble_size, weight_decay=0.00003)
-        self.nn2 = EnsembleFC(hidden_size, hidden_size, ensemble_size, weight_decay=0.00006)
-        self.nn3 = EnsembleFC(hidden_size, 1, ensemble_size, weight_decay=0.0001)
-        self.activation = nn.SiLU()
-        self.ensemble_size = ensemble_size
-        self.apply(init_weights)
+        self.apply(weights_init_)
 
     def forward(self, state, action):
         xu = torch.cat([state, action], 1)
-        nn1_output = self.activation(self.nn1(xu[None, :, :].repeat([self.ensemble_size, 1, 1])))
-        nn2_output = self.activation(self.nn2(nn1_output))
-        nn3_output = self.nn3(nn2_output)
+        x1 = F.relu(self.linear1(xu))
+        x1 = F.relu(self.linear2(x1))
+        x1 = self.linear3(x1)
 
-        return nn3_output
-
-    def get_decay_loss(self):
-        decay_loss = 0.
-        for m in self.children():
-            if isinstance(m, EnsembleFC):
-                decay_loss += m.weight_decay * torch.sum(torch.square(m.weight)) / 2.
-        return decay_loss
-
+        return x1
 # -----------------------------------------------------------------------------
 
 class GaussianPolicy(nn.Module):

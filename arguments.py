@@ -23,16 +23,13 @@ def readParser():
     parser.add_argument('--n_training_threads', default=10)
     parser.add_argument('--experiment_name', default='exp')
     parser.add_argument('--num_epoch', type=int, default=300)
-    parser.add_argument('--num_eval_epochs', type=int, default=1)
+    parser.add_argument('--num_eval_epochs', type=int, default=10)
 
     # ---------------------Algorithm Config-------------------------
     parser.add_argument('--k', type=float, default=0.5)
     parser.add_argument('--qc_ens_size', type=int, default=4)
     parser.add_argument('--c', type=float, default=10)
-    parser.add_argument('--num_train_repeat', type=int, default=10)
-
-    parser.add_argument('--intrgt_max', action='store_true', default=False)
-    parser.add_argument('--M', type=int, default=4, help='this number should be <= qc_ens_size')
+    parser.add_argument('--num_train_repeat', type=int, default=20)
 
     # -------------------Basic Hyperparameters---------------------
     parser.add_argument('--epsilon', default=1e-3)
