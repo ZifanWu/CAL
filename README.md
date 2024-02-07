@@ -34,7 +34,7 @@ python main.py --env_name Safexp-PointButton1-v0 --num_epoch 500
 
 For MuJoCo tasks:
 ```shell
-python main.py --env_name Hopper-v3 --num_epoch 300
+python main.py --env_name Ant-v3 --num_epoch 300 --c 100 --qc_ens_size 8
 ```
 
 
