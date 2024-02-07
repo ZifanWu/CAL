@@ -91,21 +91,13 @@ class EnsembleFC(nn.Module):
             self.in_features, self.out_features, self.bias is not None
         )
 
-class Swish(nn.Module):
-    def __init__(self):
-        super(Swish, self).__init__()
-
-    def forward(self, x):
-        x = x * F.sigmoid(x)
-        return x
-
 class QcEnsemble(nn.Module):
     def __init__(self, state_size, action_size, ensemble_size, hidden_size=256):
         super(QcEnsemble, self).__init__()
         self.nn1 = EnsembleFC(state_size + action_size, hidden_size, ensemble_size, weight_decay=0.00003)
         self.nn2 = EnsembleFC(hidden_size, hidden_size, ensemble_size, weight_decay=0.00006)
         self.nn3 = EnsembleFC(hidden_size, 1, ensemble_size, weight_decay=0.0001)
-        self.activation = Swish()
+        self.activation = nn.SiLU()
         self.ensemble_size = ensemble_size
         self.apply(init_weights)
 

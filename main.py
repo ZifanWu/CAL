@@ -140,6 +140,7 @@ if __name__ == '__main__':
     args = readParser()
     args.cost_lim = get_threshold(args.env_name, constraint=args.constraint_type)
     if 'Safe' in args.env_name: # safetygym
+        args.constraint_type = 'safetygym'
         args.safetygym = True
         args.epoch_length = 400
     os.environ['CUDA_VISIBLE_DEVICES'] = args.cuda_num
