@@ -59,7 +59,7 @@ The configurations different from the default setting are as follows:
 
   (In my test runs, the size of the ensemble does not significantly affect the running speed, thanks to the batch matrix multiplication function provided by PyTorch.)
 
-> While in CAL conservatism is originally incorporated in policy optimization, for the task of Humanoid we found it more effective to instead incorporate conservatism into $Q_c$ learning. To turn on this component, just set the option `--intrgt_max` to True.
+> NOTE: While in CAL conservatism is originally incorporated in policy optimization, for the task of Humanoid we found it more effective to instead incorporate conservatism into $Q_c$ learning. To turn on this component, just set the option `--intrgt_max` to True.
 
 ### Logging
 The codebase contains [wandb](https://wandb.ai/) as a visualization tool for experimental management. The user can initiate a wandb experiment by adding `--use_wandb` in the command above and specifying the wandb user account by `--user_name [your account]`.
