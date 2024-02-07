@@ -39,7 +39,7 @@ python main.py --env_name Ant-v3 --num_epoch 300 --c 100 --qc_ens_size 8
 
 
 
-### Settings for hyperparameter & algorithmic components
+### Settings for hyperparameters & algorithmic components
 
 ####  Safety-Gym
 
