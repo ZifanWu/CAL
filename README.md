@@ -41,7 +41,7 @@ We adopt the same hyperparameter setting across all Safety-Gym tasks tested in o
 
 ####  MuJoCo
 
-The configurations different from the default setting are as follows:
+The configurations *different from the default setting* are as follows:
 
 - The conservatism parameter $k$ (`--k` in [`/arguments.py`](/arguments.py)) is 0. for Humanoid.
 
