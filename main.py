@@ -53,6 +53,7 @@ def train(args, env_sampler, agent, pool):
 
             if total_step % epo_len == 0 or total_step == 1:
                 test_reward, test_cost = evaluate(args.num_eval_epochs)
+                print('env: {}, exp: {}, step: {}, test_return: {}, test_cost: {}, budget: {}, seed: {}, cuda_num: {}, time: {}s'.format(args.env_name, args.experiment_name, total_step, np.around(test_reward, 2), np.around(test_cost, 2), args.cost_lim, args.seed, args.cuda_num, int(time.time() - sta)))
                 print('env: {}, step: {}, test_return: {}, test_cost: {}, budget: {}, seed: {}, cuda_num: {}, time: {}s'.format(args.env_name, total_step, np.around(test_reward, 2), np.around(test_cost, 2), args.cost_lim, args.seed, args.cuda_num, int(time.time() - sta)))
                 if args.use_wandb:
                     wandb.log({"test_return": test_reward, 'total_step': total_step})
@@ -138,10 +139,11 @@ if __name__ == '__main__':
     from env.constraints import get_threshold
     import safety_gym
     args = readParser()
-    args.cost_lim = get_threshold(args.env_name, constraint=args.constraint_type)
     if 'Safe' in args.env_name: # safetygym
+        args.constraint_type = 'safetygym'
         args.safetygym = True
         args.epoch_length = 400
+    args.cost_lim = get_threshold(args.env_name, constraint=args.constraint_type)
     os.environ['CUDA_VISIBLE_DEVICES'] = args.cuda_num
     args.seed = torch.randint(0, 10000, (1,)).item()
     main(args)
