@@ -46,7 +46,7 @@ def readParser():
                         help='Policy Type: Gaussian | Deterministic (default: Gaussian)')
     parser.add_argument('--hidden_size', type=int, default=256)
     parser.add_argument('--lr', type=float, default=0.0003)
-    parser.add_argument('--qc_lr', type=float, default=0.0005)
+    parser.add_argument('--qc_lr', type=float, default=0.0003)
     parser.add_argument('--critic_target_update_frequency', type=int, default=2)
     parser.add_argument('--replay_size', type=int, default=1000000)
     parser.add_argument('--min_pool_size', type=int, default=1000) # default 1000
