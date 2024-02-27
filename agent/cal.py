@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 from agent import Agent
 from agent.utils import soft_update
-from agent.model import QNetwork, GaussianPolicy, QcEnsemble
+from agent.model import QNetwork, GaussianPolicy, QEnsemble
 
 
 class CALAgent(Agent):
@@ -24,13 +24,17 @@ class CALAgent(Agent):
         self.cost_lr_scale = 1.
 
         # Reward critic
-        self.critic = QNetwork(num_inputs, action_space.shape[0], args.hidden_size).to(device=self.device)
-        self.critic_target = QNetwork(num_inputs, action_space.shape[0], args.hidden_size).to(self.device)
+        if args.rew_ens:
+            self.critic = QEnsemble(num_inputs, action_space.shape[0], args.qr_ens_size, args.hidden_size).to(device=self.device)
+            self.critic_target = QEnsemble(num_inputs, action_space.shape[0], args.qr_ens_size, args.hidden_size).to(self.device)
+        else:
+            self.critic = QNetwork(num_inputs, action_space.shape[0], args.hidden_size).to(device=self.device)
+            self.critic_target = QNetwork(num_inputs, action_space.shape[0], args.hidden_size).to(self.device)
         self.critic_target.load_state_dict(self.critic.state_dict())
 
         # Safety critics
-        self.safety_critics = QcEnsemble(num_inputs, action_space.shape[0], args.qc_ens_size, args.hidden_size).to(self.device)
-        self.safety_critic_targets = QcEnsemble(num_inputs, action_space.shape[0], args.qc_ens_size, args.hidden_size).to(self.device)
+        self.safety_critics = QEnsemble(num_inputs, action_space.shape[0], args.qc_ens_size, args.hidden_size).to(self.device)
+        self.safety_critic_targets = QEnsemble(num_inputs, action_space.shape[0], args.qc_ens_size, args.hidden_size).to(self.device)
         self.safety_critic_targets.load_state_dict(self.safety_critics.state_dict())
 
         # policy
@@ -49,7 +53,7 @@ class CALAgent(Agent):
         self.actor_optimizer = torch.optim.Adam(self.policy.parameters(), lr=args.lr)
         self.critic_optimizer = torch.optim.Adam(
             self.critic.parameters(),
-            lr=args.lr)
+            lr=args.qr_lr)
         self.safety_critic_optimizer = torch.optim.Adam(self.safety_critics.parameters(), lr=args.qc_lr)
 
         self.log_alpha_optimizer = torch.optim.Adam([self.log_alpha], lr=args.lr)
@@ -98,14 +102,24 @@ class CALAgent(Agent):
         next_action, next_log_prob, _ = self.policy.sample(next_state)
 
         # Reward critics update
-        current_Q1, current_Q2 = self.critic(state, action)
-        with torch.no_grad():
-            target_Q1, target_Q2 = self.critic_target(next_state, next_action)
-            target_V = torch.min(target_Q1, target_Q2) - self.alpha.detach() * next_log_prob
+        if self.args.rew_ens:
+            qr_idxs = np.random.choice(self.args.qr_ens_size, 2)
+            current_QRs = self.critic(state, action)
+            with torch.no_grad():
+                target_QRs = self.critic_target(next_state, next_action)
+                target_V = target_QRs[qr_idxs].min(dim=0).values - self.alpha.detach() * next_log_prob
+        else:
+            current_Q1, current_Q2 = self.critic(state, action)
+            with torch.no_grad():
+                target_Q1, target_Q2 = self.critic_target(next_state, next_action)
+                target_V = torch.min(target_Q1, target_Q2) - self.alpha.detach() * next_log_prob
         target_Q = reward + (mask * self.discount * target_V)
         target_Q = target_Q.detach()
 
-        critic_loss = F.mse_loss(current_Q1, target_Q) + F.mse_loss(current_Q2, target_Q)
+        if self.args.rew_ens:
+            critic_loss = F.mse_loss(current_QRs, target_Q[None, :, :].repeat(self.args.qr_ens_size, 1, 1))
+        else:
+            critic_loss = F.mse_loss(current_Q1, target_Q) + F.mse_loss(current_Q2, target_Q)
         self.critic_optimizer.zero_grad()
         critic_loss.backward()
         self.critic_optimizer.step()
@@ -130,39 +144,53 @@ class CALAgent(Agent):
         self.safety_critic_optimizer.step()
 
 
-    def update_actor(self, state, action_taken):
+    def update_actor(self, state, action_taken, init_state=None):
         action, log_prob, _ = self.policy.sample(state)
 
         # Reward critic
-        actor_Q1, actor_Q2 = self.critic(state, action)
-        actor_Q = torch.min(actor_Q1, actor_Q2)
+        if self.args.rew_ens:
+            actor_QRs = self.critic(state, action)
+            qr_idxs = np.random.choice(self.args.qr_ens_size, 2)
+            if self.args.qr_mean:
+                actor_Q = torch.mean(actor_QRs, dim=0)
+            else:
+                actor_Q = torch.min(actor_QRs[qr_idxs], dim=0).values
+        else:
+            actor_Q1, actor_Q2 = self.critic(state, action)
+            actor_Q = torch.min(actor_Q1, actor_Q2)
 
         # Safety critic
+        # with torch.no_grad():
+        #     current_QCs = self.safety_critics(state, action_taken)
+        #     current_std, current_mean = torch.std_mean(current_QCs, dim=0)
+        #     if self.args.qc_ens_size == 1:
+        #         current_std = torch.zeros_like(current_mean).to(self.device)
+        #     current_QC = current_mean + self.args.k * current_std
         actor_QCs = self.safety_critics(state, action)
-        with torch.no_grad():
-            current_QCs = self.safety_critics(state, action_taken)
-        
-        with torch.no_grad():
-            statetd, current_mean = torch.std_mean(current_QCs, dim=0)
-            if self.args.qc_ens_size == 1:
-                statetd = torch.zeros_like(current_mean).to(self.device)
-            current_QC = current_mean + self.args.k * statetd
         actor_std, actor_mean = torch.std_mean(actor_QCs, dim=0)
         if self.args.qc_ens_size == 1:
             actor_std = torch.zeros_like(actor_std).to(self.device)
         actor_QC = actor_mean + self.args.k * actor_std
 
         # Compute gradient rectification
-        self.rect = self.c * torch.mean(self.target_cost - current_QC)
+        # self.rect = self.c * torch.mean(self.target_cost - current_QC)
+        self.rect = self.c * torch.mean(self.target_cost - actor_mean.detach()) # TODO 先不用init_state, 看这里的变化有什么影响
         self.rect = torch.clamp(self.rect.detach(), max=self.lam.item())
 
         # Policy loss
         lam = self.lam.detach()
-        actor_loss = torch.mean(
-            self.alpha.detach() * log_prob
-            - actor_Q
-            + (lam - self.rect) * actor_QC
-        )
+        if self.args.woALM:
+            actor_loss = torch.mean(
+                self.alpha.detach() * log_prob
+                - actor_Q
+                + (lam) * actor_QC
+            )
+        else:
+            actor_loss = torch.mean(
+                self.alpha.detach() * log_prob
+                - actor_Q
+                + (lam - self.rect) * actor_QC
+            )
 
         # Optimize the policy
         self.actor_optimizer.zero_grad()
@@ -174,6 +202,14 @@ class CALAgent(Agent):
         alpha_loss.backward()
         self.log_alpha_optimizer.step()
 
+        # Dual update
+        if init_state is not None:
+            with torch.no_grad():
+                current_action, _, _ = self.policy.sample(state)
+                current_QCs = self.safety_critics(init_state, current_action)
+                current_QC = torch.mean(current_QCs, dim=0)
+        else:
+            current_QC = actor_QC.detach()
         self.log_lam_optimizer.zero_grad()
         lam_loss = torch.mean(self.lam * (self.target_cost - current_QC).detach())
         lam_loss.backward()
@@ -182,7 +218,11 @@ class CALAgent(Agent):
 
     def update_parameters(self, memory, updates):
         self.update_counter += 1
-        state_batch, action_batch, reward_batch, next_state_batch, mask_batch = memory
+        if self.args.init_s_for_qc:
+            state_batch, action_batch, reward_batch, next_state_batch, mask_batch, init_s_batch = memory
+            init_s_batch = torch.FloatTensor(init_s_batch).to(self.device)
+        else:
+            state_batch, action_batch, reward_batch, next_state_batch, mask_batch = memory
 
         state_batch = torch.FloatTensor(state_batch).to(self.device)
         next_state_batch = torch.FloatTensor(next_state_batch).to(self.device)
@@ -192,7 +232,10 @@ class CALAgent(Agent):
         mask_batch = torch.FloatTensor(mask_batch).to(self.device).unsqueeze(1)
 
         self.update_critic(state_batch, action_batch, reward_batch, cost_batch, next_state_batch, mask_batch)
-        self.update_actor(state_batch, action_batch)
+        if self.args.init_s_for_qc:
+            self.update_actor(state_batch, action_batch, init_s_batch)
+        else:
+            self.update_actor(state_batch, action_batch)
 
         if updates % self.critic_target_update_frequency == 0:
             soft_update(self.critic_target, self.critic, self.critic_tau)

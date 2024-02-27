@@ -10,6 +10,7 @@ import setproctitle
 
 from agent.replay_memory import ReplayMemory
 from agent.cal import CALAgent
+from agent.sac import SACAgent
 from sampler.mujoco_env_sampler import MuJoCoEnvSampler
 from sampler.safetygym_env_sampler import SafetygymEnvSampler
 
@@ -23,9 +24,11 @@ def train(args, env_sampler, agent, pool):
         sta = time.time()
         epo_len = args.epoch_length
         train_policy_steps = 0
-        for i in range(epo_len):
+        for i in range(epo_len):            
             cur_state, action, next_state, reward, done, info = env_sampler.sample(agent, i)
             pool.push(cur_state, action, reward, next_state, done)
+            if env_sampler.first_step:
+                pool.push_init_s(cur_state)
 
             # train the policy
             if len(pool) > args.min_pool_size:
@@ -54,7 +57,6 @@ def train(args, env_sampler, agent, pool):
             if total_step % epo_len == 0 or total_step == 1:
                 test_reward, test_cost = evaluate(args.num_eval_epochs)
                 print('env: {}, exp: {}, step: {}, test_return: {}, test_cost: {}, budget: {}, seed: {}, cuda_num: {}, time: {}s'.format(args.env_name, args.experiment_name, total_step, np.around(test_reward, 2), np.around(test_cost, 2), args.cost_lim, args.seed, args.cuda_num, int(time.time() - sta)))
-                print('env: {}, step: {}, test_return: {}, test_cost: {}, budget: {}, seed: {}, cuda_num: {}, time: {}s'.format(args.env_name, total_step, np.around(test_reward, 2), np.around(test_cost, 2), args.cost_lim, args.seed, args.cuda_num, int(time.time() - sta)))
                 if args.use_wandb:
                     wandb.log({"test_return": test_reward, 'total_step': total_step})
                     wandb.log({"test_cost": test_cost, 'total_step': total_step})
@@ -65,6 +67,8 @@ def exploration_before_start(args, env_sampler, pool, agent):
     for i in range(args.init_exploration_steps):
         cur_state, action, next_state, reward, done, info = env_sampler.sample(agent, i)
         pool.push(cur_state, action, reward, next_state, done)
+        if env_sampler.first_step:
+            pool.push_init_s(cur_state)
 
 
 def train_policy_repeats(args, total_step, train_step, pool, agent):
@@ -78,7 +82,11 @@ def train_policy_repeats(args, total_step, train_step, pool, agent):
         batch_state, batch_action, batch_reward, batch_next_state, batch_done = pool.sample(args.policy_train_batch_size)
         batch_reward, batch_done = np.squeeze(batch_reward), np.squeeze(batch_done)
         batch_done = (~batch_done).astype(int)
-        agent.update_parameters((batch_state, batch_action, batch_reward, batch_next_state, batch_done), i)
+        if args.init_s_for_qc:
+            init_state = pool.sample_init_s(args.policy_train_batch_size)
+            agent.update_parameters((batch_state, batch_action, batch_reward, batch_next_state, batch_done, init_state), i)
+        else:
+            agent.update_parameters((batch_state, batch_action, batch_reward, batch_next_state, batch_done), i)
     return args.num_train_repeat
 
 
@@ -117,7 +125,10 @@ def main(args):
     setproctitle.setproctitle(str(args.env_name) + "-" + str(args.seed))
 
     # Intial agent
-    agent = CALAgent(s_dim, env.action_space, args)
+    if args.no_cons:
+        agent = SACAgent(s_dim, env.action_space, args)
+    else:
+        agent = CALAgent(s_dim, env.action_space, args)
 
     # Initial pool for env
     pool = ReplayMemory(args.replay_size)

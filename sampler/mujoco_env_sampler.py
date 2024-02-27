@@ -14,16 +14,20 @@ class MuJoCoEnvSampler():
         self.sum_reward = 0
         
         self.cur_s = None
+        self.first_step = False
 
     def sample(self, agent, i, eval_t=False):
         self.total_path_length += 1
         if self.current_state is None:
             self.current_state = self.env.reset()
+            self.first_step = True
             if self.args.env_name == 'Ant-v3':
                 self.current_state = self.current_state[:27]
             elif self.args.env_name == 'Humanoid-v3':
                 self.current_state = self.current_state[:45]
             self.cur_s = self.current_state.copy()
+        else:
+            self.first_step = False
 
         cur_state = self.current_state
         action = agent.select_action(cur_state, eval_t)

@@ -1,0 +1,239 @@
+2024-02-25 10:48:04 INFO open for scan: /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091706-1x0h9via/run-1x0h9via.wandb
+2024-02-25 10:48:38 ERROR Retry attempt failed:
+Traceback (most recent call last):
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/connectionpool.py", line 449, in _make_request
+    six.raise_from(e, None)
+  File "<string>", line 3, in raise_from
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/connectionpool.py", line 444, in _make_request
+    httplib_response = conn.getresponse()
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/http/client.py", line 1347, in getresponse
+    response.begin()
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/http/client.py", line 307, in begin
+    version, status, reason = self._read_status()
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/http/client.py", line 268, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/socket.py", line 704, in readinto
+    return self._sock.recv_into(b)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/ssl.py", line 1241, in recv_into
+    return self.read(nbytes, buffer)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/ssl.py", line 1099, in read
+    return self._sslobj.read(len, buffer)
+socket.timeout: The read operation timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/requests/adapters.py", line 489, in send
+    resp = conn.urlopen(
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    retries = retries.increment(
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/util/retry.py", line 550, in increment
+    raise six.reraise(type(error), error, _stacktrace)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/packages/six.py", line 770, in reraise
+    raise value
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/connectionpool.py", line 703, in urlopen
+    httplib_response = self._make_request(
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/connectionpool.py", line 451, in _make_request
+    self._raise_timeout(err=e, url=url, timeout_value=read_timeout)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/connectionpool.py", line 340, in _raise_timeout
+    raise ReadTimeoutError(
+urllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='api.wandb.ai', port=443): Read timed out. (read timeout=10)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/wandb/sdk/lib/retry.py", line 113, in __call__
+    result = self._call_fn(*args, **kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 213, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/transport/requests.py", line 38, in execute
+    request = requests.post(self.url, **post_args)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/requests/api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/requests/sessions.py", line 587, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/requests/sessions.py", line 701, in send
+    r = adapter.send(request, **kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/requests/adapters.py", line 578, in send
+    raise ReadTimeout(e, request=request)
+requests.exceptions.ReadTimeout: HTTPSConnectionPool(host='api.wandb.ai', port=443): Read timed out. (read timeout=10)
+2024-02-26 14:44:51 INFO watching files in: /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091706-1x0h9via/files
+2024-02-26 14:44:51 INFO run started: 1x0h9via with start time 1708737426.554009
+2024-02-26 14:44:51 INFO saving file wandb-metadata.json with policy now
+2024-02-26 14:44:52 INFO saving file wandb-summary.json with policy end
+2024-02-26 14:44:52 INFO handling exit code: 255
+2024-02-26 14:44:52 INFO handling runtime: 91844
+2024-02-26 14:44:52 INFO saving file wandb-summary.json with policy end
+2024-02-26 14:44:52 INFO send defer
+2024-02-26 14:44:52 INFO handle sender defer: 0
+2024-02-26 14:44:52 INFO send defer: 1
+2024-02-26 14:44:52 INFO handle sender defer: 1
+2024-02-26 14:44:52 INFO send defer: 2
+2024-02-26 14:44:52 INFO handle sender defer: 2
+2024-02-26 14:44:52 INFO send defer: 3
+2024-02-26 14:44:52 INFO handle sender defer: 3
+2024-02-26 14:44:52 INFO send defer: 4
+2024-02-26 14:44:52 INFO handle sender defer: 4
+2024-02-26 14:44:52 INFO send defer: 5
+2024-02-26 14:44:52 INFO handle sender defer: 5
+2024-02-26 14:44:52 INFO send defer: 6
+2024-02-26 14:44:52 INFO handle sender defer: 6
+2024-02-26 14:44:52 INFO file/dir modified: /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091706-1x0h9via/files/wandb-summary.json
+2024-02-26 14:44:52 INFO file/dir modified: /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091706-1x0h9via/files/config.yaml
+2024-02-26 14:44:52 INFO file/dir created: /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091706-1x0h9via/files/output.log
+2024-02-26 14:44:53 INFO Uploaded file /tmp/tmpv7spjd3mwandb/1yginwys-wandb-metadata.json
+2024-02-26 14:44:54 INFO send defer: 7
+2024-02-26 14:44:54 INFO handle sender defer: 7
+2024-02-26 14:44:54 INFO shutting down directory watcher
+2024-02-26 14:44:54 INFO file/dir modified: /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091706-1x0h9via/files/output.log
+2024-02-26 14:44:54 INFO scan: /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091706-1x0h9via/files
+2024-02-26 14:44:54 INFO scan save: /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091706-1x0h9via/files/requirements.txt requirements.txt
+2024-02-26 14:44:54 INFO scan save: /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091706-1x0h9via/files/wandb-metadata.json wandb-metadata.json
+2024-02-26 14:44:54 INFO scan save: /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091706-1x0h9via/files/config.yaml config.yaml
+2024-02-26 14:44:54 INFO scan save: /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091706-1x0h9via/files/output.log output.log
+2024-02-26 14:44:54 INFO scan save: /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091706-1x0h9via/files/wandb-summary.json wandb-summary.json
+2024-02-26 14:44:54 INFO scan save: /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091706-1x0h9via/files/conda-environment.yaml conda-environment.yaml
+2024-02-26 14:44:54 INFO send defer: 8
+2024-02-26 14:44:54 INFO handle sender defer: 8
+2024-02-26 14:44:54 INFO shutting down file pusher
+2024-02-26 14:44:54 INFO shutting down sender
+2024-02-26 14:44:54 INFO shutting down file pusher
+2024-02-26 14:44:54 INFO waiting for file pusher
+2024-02-26 14:44:55 INFO Uploaded file /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091706-1x0h9via/files/requirements.txt
+2024-02-26 14:44:55 INFO Uploaded file /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091706-1x0h9via/files/config.yaml
+2024-02-26 14:44:55 INFO Uploaded file /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091706-1x0h9via/files/wandb-summary.json
+2024-02-26 14:44:56 INFO Uploaded file /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091706-1x0h9via/files/conda-environment.yaml
+2024-02-26 14:44:56 INFO Uploaded file /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091706-1x0h9via/files/output.log
+2024-02-26 14:44:56 INFO send defer: 9
+2024-02-27 10:24:02 INFO open for scan: /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091926-1uuc89b5/run-1uuc89b5.wandb
+2024-02-27 10:24:37 ERROR Retry attempt failed:
+Traceback (most recent call last):
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/connection.py", line 174, in _new_conn
+    conn = connection.create_connection(
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/util/connection.py", line 95, in create_connection
+    raise err
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    sock.connect(sa)
+socket.timeout: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/connectionpool.py", line 703, in urlopen
+    httplib_response = self._make_request(
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/connectionpool.py", line 386, in _make_request
+    self._validate_conn(conn)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/connectionpool.py", line 1042, in _validate_conn
+    conn.connect()
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/connection.py", line 358, in connect
+    self.sock = conn = self._new_conn()
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/connection.py", line 179, in _new_conn
+    raise ConnectTimeoutError(
+urllib3.exceptions.ConnectTimeoutError: (<urllib3.connection.HTTPSConnection object at 0x7f6750466e80>, 'Connection to api.wandb.ai timed out. (connect timeout=10)')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/requests/adapters.py", line 489, in send
+    resp = conn.urlopen(
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    retries = retries.increment(
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/util/retry.py", line 592, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.wandb.ai', port=443): Max retries exceeded with url: /graphql (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f6750466e80>, 'Connection to api.wandb.ai timed out. (connect timeout=10)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/wandb/sdk/lib/retry.py", line 113, in __call__
+    result = self._call_fn(*args, **kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 213, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/transport/requests.py", line 38, in execute
+    request = requests.post(self.url, **post_args)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/requests/api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/requests/sessions.py", line 587, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/requests/sessions.py", line 701, in send
+    r = adapter.send(request, **kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/requests/adapters.py", line 553, in send
+    raise ConnectTimeout(e, request=request)
+requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='api.wandb.ai', port=443): Max retries exceeded with url: /graphql (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f6750466e80>, 'Connection to api.wandb.ai timed out. (connect timeout=10)'))
+2024-02-27 14:22:10 INFO open for scan: /home/wuzifan/results/HalfCheetah-v3/S5/wandb/offline-run-20240224_091926-1uuc89b5/run-1uuc89b5.wandb
+2024-02-27 14:22:45 ERROR Retry attempt failed:
+Traceback (most recent call last):
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/connectionpool.py", line 449, in _make_request
+    six.raise_from(e, None)
+  File "<string>", line 3, in raise_from
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/connectionpool.py", line 444, in _make_request
+    httplib_response = conn.getresponse()
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/http/client.py", line 1347, in getresponse
+    response.begin()
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/http/client.py", line 307, in begin
+    version, status, reason = self._read_status()
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/http/client.py", line 268, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/socket.py", line 704, in readinto
+    return self._sock.recv_into(b)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/ssl.py", line 1241, in recv_into
+    return self.read(nbytes, buffer)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/ssl.py", line 1099, in read
+    return self._sslobj.read(len, buffer)
+socket.timeout: The read operation timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/requests/adapters.py", line 489, in send
+    resp = conn.urlopen(
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    retries = retries.increment(
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/util/retry.py", line 550, in increment
+    raise six.reraise(type(error), error, _stacktrace)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/packages/six.py", line 770, in reraise
+    raise value
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/connectionpool.py", line 703, in urlopen
+    httplib_response = self._make_request(
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/connectionpool.py", line 451, in _make_request
+    self._raise_timeout(err=e, url=url, timeout_value=read_timeout)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/urllib3/connectionpool.py", line 340, in _raise_timeout
+    raise ReadTimeoutError(
+urllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='api.wandb.ai', port=443): Read timed out. (read timeout=10)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/wandb/sdk/lib/retry.py", line 113, in __call__
+    result = self._call_fn(*args, **kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/wandb/sdk/internal/internal_api.py", line 213, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/transport/requests.py", line 38, in execute
+    request = requests.post(self.url, **post_args)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/requests/api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/requests/sessions.py", line 587, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/requests/sessions.py", line 701, in send
+    r = adapter.send(request, **kwargs)
+  File "/home/wuzifan/miniconda3/envs/mujoco/lib/python3.9/site-packages/requests/adapters.py", line 578, in send
+    raise ReadTimeout(e, request=request)
+requests.exceptions.ReadTimeout: HTTPSConnectionPool(host='api.wandb.ai', port=443): Read timed out. (read timeout=10)

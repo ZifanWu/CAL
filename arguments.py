@@ -34,6 +34,16 @@ def readParser():
     parser.add_argument('--intrgt_max', action='store_true', default=False)
     parser.add_argument('--M', type=int, default=4, help='this number should be <= qc_ens_size')
 
+    parser.add_argument('--woALM', action='store_true', default=False)
+    parser.add_argument('--no_cons', action='store_true', default=False)
+
+    parser.add_argument('--rew_ens', action='store_true', default=False)
+    parser.add_argument('--qr_ens_size', type=int, default=4)
+    parser.add_argument('--qr_mean', action='store_true', default=False) # else perform qr.min()
+
+    # TODO 用Q(s_0, pi)来evaluate pi
+    parser.add_argument('--init_s_for_qc', action='store_true', default=False)
+
     # -------------------Basic Hyperparameters---------------------
     parser.add_argument('--epsilon', default=1e-3)
     parser.add_argument('--init_exploration_steps', type=int, default=5000)
@@ -47,9 +57,10 @@ def readParser():
     parser.add_argument('--hidden_size', type=int, default=256)
     parser.add_argument('--lr', type=float, default=0.0003)
     parser.add_argument('--qc_lr', type=float, default=0.0003)
+    parser.add_argument('--qr_lr', type=float, default=0.0003)
     parser.add_argument('--critic_target_update_frequency', type=int, default=2)
     parser.add_argument('--replay_size', type=int, default=1000000)
-    parser.add_argument('--min_pool_size', type=int, default=1000)
+    parser.add_argument('--min_pool_size', type=int, default=1000) # default 1000
     parser.add_argument('--max_train_repeat_per_step', type=int, default=5)
     parser.add_argument('--policy_train_batch_size', type=int, default=12)
 

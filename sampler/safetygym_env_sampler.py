@@ -11,11 +11,15 @@ class SafetygymEnvSampler():
         self.total_path_length = 0
         self.current_state = None
         self.max_path_length = max_path_length
+        self.first_step = False
 
     def sample(self, agent, i, eval_t=False):
         self.total_path_length += 1
         if i % self.args.epoch_length == 0:
             self.current_state = self.env.reset()
+            self.first_step = True
+        else:
+            self.first_step = False
         cur_state = self.current_state
         action = agent.select_action(cur_state, eval_t)
         next_state, reward, done, info = self.env.step(action)
