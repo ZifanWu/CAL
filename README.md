@@ -1,4 +1,7 @@
+This branch is for experimenting the effect of updating the Lagrangian multiplier by $Q_c(s_0, \pi)$.
+
 # CAL
+
 Code accompanying the paper ["Off-Policy Primal-Dual Safe Reinforcement Learning"](https://openreview.net/forum?id=vy42bYs1Wo).
 
 <div align="center"><img src="/img/cal_fig1.png" alt="CAL" width="600" /></div>
