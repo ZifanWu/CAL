@@ -59,3 +59,15 @@ The configurations *different from the default setting* are as follows:
 
 ### Logging
 The codebase contains [wandb](https://wandb.ai/) as a visualization tool for experimental management. The user can initiate a wandb experiment by adding `--use_wandb` in the command above and specifying the wandb user account by `--user_name [your account]`.
+
+##  Reference
+
+```
+@article{wu2024off,
+  title={Off-Policy Primal-Dual Safe Reinforcement Learning},
+  author={Wu, Zifan and Tang, Bo and Lin, Qian and Yu, Chao and Mao, Shangqin and Xie, Qianlong and Wang, Xingxing and Wang, Dong},
+  journal={arXiv preprint arXiv:2401.14758},
+  year={2024}
+}
+```
+
