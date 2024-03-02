@@ -141,12 +141,10 @@ class CALAgent(Agent):
         actor_QCs = self.safety_critics(state, action)
         with torch.no_grad():
             current_QCs = self.safety_critics(state, action_taken)
-        
-        with torch.no_grad():
-            statetd, current_mean = torch.std_mean(current_QCs, dim=0)
+            current_std, current_mean = torch.std_mean(current_QCs, dim=0)
             if self.args.qc_ens_size == 1:
-                statetd = torch.zeros_like(current_mean).to(self.device)
-            current_QC = current_mean + self.args.k * statetd
+                current_std = torch.zeros_like(current_mean).to(self.device)
+            current_QC = current_mean + self.args.k * current_std
         actor_std, actor_mean = torch.std_mean(actor_QCs, dim=0)
         if self.args.qc_ens_size == 1:
             actor_std = torch.zeros_like(actor_std).to(self.device)
