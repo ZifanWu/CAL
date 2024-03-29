@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 import torch.nn.functional as F
+import os
 
 from agent import Agent
 from agent.utils import soft_update
@@ -195,3 +196,29 @@ class CALAgent(Agent):
         if updates % self.critic_target_update_frequency == 0:
             soft_update(self.critic_target, self.critic, self.critic_tau)
             soft_update(self.safety_critic_targets, self.safety_critics, self.critic_tau)
+
+    # Save model parameters
+    def save_model(self, suffix="", actor_path=None, critics_path=None, safetycritics_path=None):
+        if not os.path.exists('models/'):
+            os.makedirs('models/')
+
+        if actor_path is None:
+            actor_path = "models/actor_{}_{}".format(self.args.env_name, suffix)
+        if critics_path is None:
+            critics_path = "models/critics_{}_{}".format(self.args.env_name, suffix)
+        if safetycritics_path is None:
+            safetycritics_path = "models/safetycritics_{}_{}".format(self.args.env_name, suffix)
+        print('Saving models to {}, {}, and {}'.format(actor_path, critics_path, safetycritics_path))
+        torch.save(self.policy.state_dict(), actor_path)
+        torch.save(self.critic.state_dict(), critics_path)
+        torch.save(self.safety_critics.state_dict(), safetycritics_path)
+
+    # Load model parameters
+    def load_model(self, actor_path, critics_path, safetycritics_path):
+        print('Loading models from {}, {}, and {}'.format(actor_path, critics_path, safetycritics_path))
+        if actor_path is not None:
+            self.policy.load_state_dict(torch.load(actor_path))
+        if critics_path is not None:
+            self.critic.load_state_dict(torch.load(critics_path))
+        if safetycritics_path is not None:
+            self.safety_critics.load_state_dict(torch.load(safetycritics_path))

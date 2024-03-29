@@ -24,6 +24,7 @@ def readParser():
     parser.add_argument('--experiment_name', default='exp')
     parser.add_argument('--num_epoch', type=int, default=300)
     parser.add_argument('--num_eval_epochs', type=int, default=1)
+    parser.add_argument('--save_parameters', action='store_true', default=False)
 
     # ---------------------Algorithm Config-------------------------
     parser.add_argument('--k', type=float, default=0.5)

@@ -58,6 +58,10 @@ def train(args, env_sampler, agent, pool):
                     wandb.log({"test_return": test_reward, 'total_step': total_step})
                     wandb.log({"test_cost": test_cost, 'total_step': total_step})
         epoch += 1
+    
+    # save network parameters after training
+    if args.save_parameters:
+        agent.save_model()
 
 
 def exploration_before_start(args, env_sampler, pool, agent):
